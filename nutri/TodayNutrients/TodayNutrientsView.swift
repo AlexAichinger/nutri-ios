@@ -16,9 +16,10 @@ struct TodayNutrientsView: View {
     var body: some View {
         let macros = nutritionData.first?.macroNutrients
         HStack {
-            Text("\(macros?.carbohydrates ?? 0)")
+            Text("carbs")
                 .padding()
                 .overlay(Circle().stroke(.blue))
+//            CircularProgressView(progress: 0.8)
             
             VStack(alignment: .leading) {
                 Text("\(macros?.carbohydrates ?? 0)")
@@ -31,6 +32,8 @@ struct TodayNutrientsView: View {
                     .lineLimit(2)
             }
         }
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxHeight: 200)
         .onAppear {
             Task {
                 if nutritionData.isEmpty {
@@ -43,6 +46,9 @@ struct TodayNutrientsView: View {
 
 #Preview {
     let nutriModel = TodayNutritionViewModel()
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: NutritionData.self, configurations: config)
     TodayNutrientsView()
         .environment(nutriModel)
+        .modelContainer(container)
 }

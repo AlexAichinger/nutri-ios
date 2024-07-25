@@ -9,41 +9,36 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
-    struct RatioContainer<Content: View>: View {
-        let heightRatio:CGFloat
-        let content: Content
-        
-        init(heightRatio:CGFloat = 0.5,@ViewBuilder content: () -> Content) {
-            self.heightRatio = heightRatio
-            self.content = content()
-        }
-        
-        var body: some View {
-            GeometryReader { geo in
-                VStack {
-                    Spacer()
-                    content.frame(width: geo.size.width, height: geo.size.height*heightRatio, alignment: .center)
-                    Spacer()
-                }
-            }
-        }
-    }
+    @State private var selectedTab = "dashboard"
     
     var body: some View {
-        TabView(selection: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Selection@*/.constant(1)/*@END_MENU_TOKEN@*/) {
+        TabView(selection: $selectedTab) {
             TodayNutrientsView()
-                .tabItem { Text("Nutrition Today") }
-                .tag(1)
-            
+                .tabItem {
+                    Label("Dashboard", systemImage: "house")
+                }
+                .tag("dahboard")
+            Button("Test") {
+                selectedTab = "Two"
+            }
+            .tabItem {
+                Label("One", systemImage: "star")
+            }
+            .tag("One")
             ScannerView()
-                .tabItem { Text("Log Food") }
-                .tag(2)
+                .tabItem {
+                    Label("Log Food", systemImage: "camera")
+                }
+                .tag("scanner")
         }
     }
 }
 
 #Preview {
     let nutriModel = TodayNutritionViewModel()
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: NutritionData.self, configurations: config)
     ContentView()
         .environment(nutriModel)
+        .modelContainer(container)
 }

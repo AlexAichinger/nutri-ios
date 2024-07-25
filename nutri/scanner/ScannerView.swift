@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-
-import SwiftUI
+import SwiftData
 import VisionKit
 
 struct ScannerView: View {
@@ -84,6 +83,9 @@ struct ScannerView: View {
 
 #Preview {
     let nutriModel = TodayNutritionViewModel()
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: NutritionData.self, configurations: config)
     ScannerView()
         .environment(nutriModel)
+        .modelContainer(container)
 }
