@@ -75,6 +75,40 @@ struct ScannerView: View {
             .background(Color.red)
         } else if !DataScannerViewController.isSupported {
             Text("It looks like this device doesn't support the DataScannerViewController")
+            TextField("leave for testing", text: $scannedText)
+                .textFieldStyle(.roundedBorder)
+                .padding()
+                .submitLabel(.next)
+            
+            TextField("Enter in grams how much was eaten", value: $eaten, format: .number)
+                .textFieldStyle(.roundedBorder)
+                .padding()
+                .submitLabel(.next)
+            
+            Picker("Meal", selection: $selectedOption) {
+                ForEach(MealType.allCases) { option in
+                    Text(String(describing: option))
+                    
+                }
+            }
+            .pickerStyle(.wheel)
+            
+            DatePicker("Please enter a date", selection: $eatenAt)
+            
+            AsyncButtonView(action: {
+                let code = if(scannedText.isEmpty) {barcode} else { scannedText }
+                scannedText = ""
+                await vm.sendMealLog(
+                    mealType: selectedOption,
+                    eatenInGrams: eaten,
+                    loggingDate: eatenAt,
+                    barcode: code
+                )
+                await vm.getTodaysNutrients(modelContext: modelContext)
+            }, label: {
+                Image(systemName: "hand.thumbsup.fill")
+            })
+            .disabled(false)
         } else {
             Text("It appears your camera may not be available")
         }
