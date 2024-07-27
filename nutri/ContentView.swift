@@ -35,10 +35,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    let nutriModel = TodayNutritionViewModel()
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: NutritionData.self, configurations: config)
     ContentView()
-        .environment(nutriModel)
-        .modelContainer(container)
+        .environment(TodayNutritionViewModel())
+        .modelContainer(previewContainer)
 }
